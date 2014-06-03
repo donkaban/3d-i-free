@@ -44,6 +44,11 @@ public:
     
     bool  compare(const vec3 &a) const {return ((x == a.x) && (y == a.y) && (z == a.z));}
     float length()  const {return std::sqrt(x * x + y * y + z * z);}
+    vec3  cross(const vec3 &a) const
+    {
+        return vec3({y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x});
+    }
+
     
     friend vec3 operator* (const float a, const vec3 b) {return vec3( b.x * a, b.y * a, b.z * a);}
 };
