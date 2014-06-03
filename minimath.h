@@ -23,7 +23,7 @@ public:
     }   
 
     vector3   operator-  () const {return vector3(-x,-y,-z);}
-    T  operator*  (const vector3 &a)  const {return x * a.x + y * a.y + z * a.z;}
+    T         operator*  (const vector3 &a)  const {return x * a.x + y * a.y + z * a.z;}
     vector3   operator*  (const T a)  const {return vector3( x * a, y * a, z * a);}
     vector3   operator+  (const vector3 &a)  const {return vector3(x + a.x, y + a.y, z+ a.z);}
     vector3   operator-  (const vector3 &a)  const {return vector3(x - a.x, y - a.y, z- a.z);}
@@ -35,13 +35,12 @@ public:
     bool   operator== (const vector3 &a)  const {return compare(a);}
     bool   operator!= (const vector3 &a)  const {return !compare(a);}
     
-    bool  compare(const vector3 &a) const {return ((x == a.x) && (y == a.y) && (z == a.z));}
-    T length()  const {return std::sqrt(x * x + y * y + z * z);}
-    vector3  cross(const vector3 &a) const
+    bool    compare(const vector3 &a) const {return ((x == a.x) && (y == a.y) && (z == a.z));}
+    T       length() const {return std::sqrt(x * x + y * y + z * z);}
+    vector3 cross(const vector3 &a) const
     {
         return vector3({y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x});
     }
-
     
     friend vector3 operator* (const T a, const vector3 b) {return vector3( b.x * a, b.y * a, b.z * a);}
 };
