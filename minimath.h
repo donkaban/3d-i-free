@@ -1,6 +1,5 @@
 #include <cmath> 
 #include <cstring>
-#include <initializer_list>
 
 template<typename T>
 struct vector3 
@@ -17,11 +16,7 @@ public:
     vector3(const T _x = 0, const T _y = 0 ,const T _z = 0) : 
         x(_x), y(_y),z(_z)
     {}
-    vector3(std::initializer_list<T> l) 
-    {
-        std::memcpy(data,l.begin(),sizeof(data));
-    }   
-
+   
     vector3   operator-  () const {return vector3(-x,-y,-z);}
     T         operator*  (const vector3 &a)  const {return x * a.x + y * a.y + z * a.z;}
     vector3   operator*  (const T a)  const {return vector3( x * a, y * a, z * a);}
@@ -39,9 +34,8 @@ public:
     T       length() const {return std::sqrt(x * x + y * y + z * z);}
     vector3 cross(const vector3 &a) const
     {
-        return vector3({y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x});
+        return vector3(y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x);
     }
-    
     friend vector3 operator* (const T a, const vector3 b) {return vector3( b.x * a, b.y * a, b.z * a);}
 };
 using vec3 = vector3<float>;
