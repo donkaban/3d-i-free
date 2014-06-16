@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\mouse_rotate.cs" />
      <Compile Include="Assets\rotate_me.cs" />
+     <None Include="Assets\shaders\simplest.shader" />
      <None Include="Assets\shaders\template.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

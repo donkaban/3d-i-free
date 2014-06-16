@@ -1,4 +1,4 @@
-﻿Shader "Custom/simple" 
+﻿Shader "iFree/template" 
 {
 	Properties 
 	{
@@ -11,17 +11,20 @@
 	  	GLSLPROGRAM 
 	  	#ifdef VERTEX
 	  	#include "UnityCG.glslinc"
+         varying vec2 textureCoordinates;
          void main() 
          {
+            textureCoordinates = gl_MultiTexCoord0.xy;
             gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
          }
  
       #endif
       #ifdef FRAGMENT 
-         
+         uniform sampler2D _MainTex;   
+         varying vec2 textureCoordinates;
          void main() 
          {
-            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0); 
+            gl_FragColor = texture2D(_MainTex, textureCoordinates);
          }
  
       #endif 
