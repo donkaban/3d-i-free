@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 
+
 class engine:
     __updateFunction = None
     __frame = 0
@@ -18,15 +19,15 @@ class engine:
         glEnable(GL_DEPTH_TEST)
         glutDisplayFunc(self.__draw)
         glutIdleFunc(self.__update)
-        glutKeyboardFunc(self.__key)
+        glutKeyboardFunc(self.__esc)
 
-    def __key(self, *args):
+    def __esc(self, *args):
         if (args[0] == '\033'):
             sys.exit()
 
     def __draw(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        for obj in self.__objects :
+        for obj in self.__objects:
             obj.draw()
         glutSwapBuffers()
 
@@ -38,7 +39,7 @@ class engine:
 
     def setUpdateHandler(self, hdl):
         self.__updateFunction = hdl
-    
+
     def addObject(self, obj):
         assert isinstance(obj, object)
         self.__objects.append(obj)
@@ -46,28 +47,33 @@ class engine:
     def loop(self):
         glutMainLoop()
 
+
 class material:
     __id = None
 
     def __init__(self, vertex, fragment):
-        vsh = self.__compile(vertex,GL_VERTEX_SHADER)
-        fsh = self.__compile(fragment,GL_FRAGMENT_SHADER)
-        self.__id = glCreateProgram()
-        glAttachShader(self.__id, vsh)
-        glAttachShader(self.__id, fsh)
-        glLinkProgram(self.__id)
-        glValidateProgram(self.__id)
-        if(glGetProgramiv(self.__id, GL_VALIDATE_STATUS) == GL_FALSE):
-            raise RuntimeError('shader error : %s'%glGetProgramInfoLog(self.__id))
+        vsh = self.__compile(vertex, GL_VERTEX_SHADER)
+        fsh = self.__compile(fragment, GL_FRAGMENT_SHADER)
+        self.__id = self.__link(vsh, fsh)
 
-    def __compile(self,source, shaderType):
+    def __compile(self, source, shaderType):
         shader = glCreateShader(shaderType)
-        glShaderSource(shader,source)
+        glShaderSource(shader, source)
         glCompileShader(shader)
-        result = glGetShaderiv( shader, GL_COMPILE_STATUS)
-        if not(result):
-            raise RuntimeError('compile error : %s'%(glGetShaderInfoLog(shader),))
+        result = glGetShaderiv(shader, GL_COMPILE_STATUS)
+        if not (result):
+            raise RuntimeError('compile error : %s' % (glGetShaderInfoLog(shader),))
         return shader
+
+    def __link(self, vsh, fsh):
+        prog = glCreateProgram()
+        glAttachShader(prog, vsh)
+        glAttachShader(prog, fsh)
+        glLinkProgram(prog)
+        glValidateProgram(prog)
+        if (glGetProgramiv(prog, GL_VALIDATE_STATUS) == GL_FALSE):
+            raise RuntimeError('shader error : %s' % glGetProgramInfoLog(self.__id))
+        return prog
 
     @property
     def id(self):
@@ -85,7 +91,6 @@ class object:
 
     def draw(self):
         pass
-
 
 
 
