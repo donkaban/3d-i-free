@@ -1,142 +1,93 @@
-from OpenGL.GL   import *
-from OpenGL.GLU  import *
+from OpenGL.GL import *
 from OpenGL.GLUT import *
-import Image                    
-import sys
-import math
 
-class engine :
+class engine:
     __updateFunction = None
-    __frame   = 0
+    __frame = 0
     __objects = []
 
-    def __init__(self, w, h) :
+    def __init__(self, w, h):
         glutInit(sys.argv)
-        glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH )
-        glutInitWindowSize(w,h)
-        glutInitWindowPosition ( 0, 0 )
+        glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
+        glutInitWindowSize(w, h)
+        glutInitWindowPosition(0, 0)
         glutCreateWindow("miniengine")
-        glClearColor(0.0,0.0,0.2,0.0)
-        glClearDepth(1.0)                
+        glClearColor(0.0, 0.0, 0.2, 0.0)
+        glClearDepth(1.0)
         glDepthFunc(GL_LEQUAL)
         glEnable(GL_DEPTH_TEST)
-        gluPerspective(60.0,float(w)/float(h),1.0,60.0)
-        glMatrixMode(GL_MODELVIEW )
-        glLoadIdentity()
-        gluLookAt(0.0,0.0,0.0,1.0,1.0,1.0,0.0,1.0,0.0)
         glutDisplayFunc(self.__draw)
         glutIdleFunc(self.__update)
         glutKeyboardFunc(self.__key)
-        frame = 0
-      
-    def loop(self) :   
-        glutMainLoop()
 
-    def __key(self,*args ):
-        if(args[0] == '\033'):
-            sys.exit ()
+    def __key(self, *args):
+        if (args[0] == '\033'):
+            sys.exit()
 
-    def __draw(self) :
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)   
+    def __draw(self):
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        for obj in self.__objects :
+            obj.draw()
         glutSwapBuffers()
 
-    def __update(self) :
-        if(self.__updateFunction) :
+    def __update(self):
+        if (self.__updateFunction):
             self.__updateFunction(self.__frame)
-        self.__frame +=1    
-        glutPostRedisplay()   
+        self.__frame += 1
+        glutPostRedisplay()
 
     def setUpdateHandler(self, hdl):
-        self.__updateFunction = hdl    
+        self.__updateFunction = hdl
+    
+    def addObject(self, obj):
+        assert isinstance(obj, object)
+        self.__objects.append(obj)
 
-#########################################################################    
-  
-class object :
-    vertexes = []
-    indicies = []
+    def loop(self):
+        glutMainLoop()
 
-    def __init__(self, v, i) :
-        self.vertexes = v
-        self.indicies = i
-       
-
-#########################################################################    
-   
-
-class material :
+class material:
     __id = None
-    def __init__(self, vertex, fragment) :
-        vsh = glCreateShader(GL_VERTEX_SHADER);    
-        fsh = glCreateShader(GL_FRAGMENT_SHADER);  
-        glShaderSource(vsh,vertex); 
-        glShaderSource(fsh,fragment);
-        glCompileShader(vsh); 
-        glCompileShader(fsh); 
-        self.__id = glCreateProgram(); 
-        glAttachShader(self.__id,vsh);
-        glAttachShader(self.__id,fsh);
-        glLinkProgram(self.__id);    
-    
-    def id() :
-        return __id 
 
-#########################################################################    
+    def __init__(self, vertex, fragment):
+        vsh = self.__compile(vertex,GL_VERTEX_SHADER)
+        fsh = self.__compile(fragment,GL_FRAGMENT_SHADER)
+        self.__id = glCreateProgram()
+        glAttachShader(self.__id, vsh)
+        glAttachShader(self.__id, fsh)
+        glLinkProgram(self.__id)
+        glValidateProgram(self.__id)
+        if(glGetProgramiv(self.__id, GL_VALIDATE_STATUS) == GL_FALSE):
+            raise RuntimeError('shader error : %s'%glGetProgramInfoLog(self.__id))
 
+    def __compile(self,source, shaderType):
+        shader = glCreateShader(shaderType)
+        glShaderSource(shader,source)
+        glCompileShader(shader)
+        result = glGetShaderiv( shader, GL_COMPILE_STATUS)
+        if not(result):
+            raise RuntimeError('compile error : %s'%(glGetShaderInfoLog(shader),))
+        return shader
 
-
-
-
-
-
-
-
-
+    @property
+    def id(self):
+        return self.__id
 
 
+class object:
+    vertexes = []
+    indexes = []
+    material = None
 
+    def __init__(self, v, i):
+        self.vertexes = v
+        self.indexes = i
 
-
-def myUpdate(i) :
-    print(i)
-
-
-
-
-
-
-e = engine(400,400)
-e.setUpdateHandler(myUpdate)
-
-m = material(
-    '''
-        attribute vec3 position;
-        void main() 
-        {
-            gl_Position = position;
-        }
-    ''',
-    
-    '''
-        void main()
-        {
-            gl_FragColor = vec4(1,0,0,1);
-        }
-
-
-    '''
-) 
+    def draw(self):
+        pass
 
 
 
-
-
-
-
-
-
-
-
-e.loop()        
 
 
 
