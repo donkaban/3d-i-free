@@ -1,8 +1,6 @@
 from miniengine import *
 
 
-
-
 e = Engine(400, 400)
 
 def my_update(i):

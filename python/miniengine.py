@@ -139,21 +139,19 @@ class Mesh:
         assert isinstance(mat, Material)
         self.__material = mat
 
-
     def draw(self):
-        glEnableClientState(GL_VERTEX_ARRAY)
         glUseProgram(self.__material.id)
         glBindBuffer(GL_ARRAY_BUFFER, self.__id[0])
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.__id[1])
+
         t = glGetUniformLocation(self.__material.id,'time')
         if t != -1 :
             glUniform1f(t,Engine.getTime())
+
         glVertexAttribPointer(self.__material.pos, 3, GL_FLOAT, GL_FALSE, 20, None)
         glEnableVertexAttribArray(self.__material.pos)
-
         glVertexAttribPointer(self.__material.tex, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
         glEnableVertexAttribArray(self.__material.tex)
-
         glDrawElements(GL_TRIANGLES, ARR.arrayByteCount(self.__ndx) * 2, GL_UNSIGNED_SHORT, None)
         if glGetError() != GL_NO_ERROR:
             raise RuntimeError('draw error!')
