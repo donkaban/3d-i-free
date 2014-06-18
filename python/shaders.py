@@ -1,5 +1,28 @@
 from miniengine import *
 
+def simple() :
+    return Material(
+        '''
+            attribute vec3  pos;
+            attribute vec2  tex;
+            uniform float time;
+            varying   vec2  v_tex;
+            void main()
+            {
+                v_tex=tex;
+                gl_Position = vec4(pos * cos(time),1);
+            }
+        ''',
+        '''
+            uniform float time;
+            varying vec2  v_tex;
+            void main()
+            {
+                gl_FragColor = vec4(v_tex,sin(time*10.0),1);
+            }
+        '''
+    )
+
 
 def zebro() :
     return Material(

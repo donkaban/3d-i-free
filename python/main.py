@@ -1,11 +1,12 @@
-from miniengine import *
 from objects import *
 import shaders
 
-e = Engine(400, 400)
+e = Engine(800, 600)
 
-plane = createPlane(1,1).set_material(shaders.zebro())
-
+plane = createPlane(2,2).set_material(shaders.zebro())
+tri = createTriangle(1).set_material(shaders.simple())
 e.add_object(plane)
+e.add_object(tri)
+
 e.loop()
 
