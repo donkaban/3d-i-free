@@ -138,6 +138,7 @@ class Mesh:
     def set_material(self, mat):
         assert isinstance(mat, Material)
         self.__material = mat
+        return self
 
     def draw(self):
         glUseProgram(self.__material.id)
