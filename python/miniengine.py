@@ -2,7 +2,7 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 
 
-class engine:
+class Engine:
     __updateFunction = None
     __frame = 0
     __objects = []
@@ -21,8 +21,9 @@ class engine:
         glutIdleFunc(self.__update)
         glutKeyboardFunc(self.__esc)
 
-    def __esc(self, *args):
-        if (args[0] == '\033'):
+    @staticmethod
+    def __esc(*args):
+        if args[0] == '\033':
             sys.exit()
 
     def __draw(self):
@@ -32,23 +33,24 @@ class engine:
         glutSwapBuffers()
 
     def __update(self):
-        if (self.__updateFunction):
+        if self.__updateFunction:
             self.__updateFunction(self.__frame)
         self.__frame += 1
         glutPostRedisplay()
 
-    def setUpdateHandler(self, hdl):
+    def set_update(self, hdl):
         self.__updateFunction = hdl
 
-    def addObject(self, obj):
+    def add_object(self, obj):
         assert isinstance(obj, object)
         self.__objects.append(obj)
 
-    def loop(self):
+    @staticmethod
+    def loop():
         glutMainLoop()
 
 
-class material:
+class Material:
     __id = None
 
     def __init__(self, vertex, fragment):
@@ -56,12 +58,13 @@ class material:
         fsh = self.__compile(fragment, GL_FRAGMENT_SHADER)
         self.__id = self.__link(vsh, fsh)
 
-    def __compile(self, source, shaderType):
-        shader = glCreateShader(shaderType)
+    @staticmethod
+    def __compile(source, shader_type):
+        shader = glCreateShader(shader_type)
         glShaderSource(shader, source)
         glCompileShader(shader)
         result = glGetShaderiv(shader, GL_COMPILE_STATUS)
-        if not (result):
+        if not result:
             raise RuntimeError('compile error : %s' % (glGetShaderInfoLog(shader),))
         return shader
 
@@ -80,9 +83,12 @@ class material:
         return self.__id
 
 
-class object:
+# vertex : x,y,z,s,t
+
+class Mesh:
     vertexes = []
     indexes = []
+    textures = []
     material = None
 
     def __init__(self, v, i):
@@ -91,19 +97,3 @@ class object:
 
     def draw(self):
         pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

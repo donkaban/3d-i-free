@@ -4,15 +4,16 @@ from miniengine import *
 def my_update(i):
     print(i)
 
-e = engine(400, 400)
+e = Engine(400, 400)
 
-e.setUpdateHandler(my_update)
+e.set_update(my_update)
 
-m = material(
+m = Material(
     '''
         attribute vec4 position;
         void main()
         {
+
             gl_Position = position;
         }
     ''',
