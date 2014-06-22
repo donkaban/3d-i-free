@@ -75,14 +75,12 @@ class Engine:
         t = time.time() - Engine.__time
         return t
 
-
 class Material:
     __id = None
     __pos = None
     __tex = None
     __mv = None
     __pv = None
-
 
     def __init__(self, vertex, fragment):
         vsh = self.__compile(vertex, GL_VERTEX_SHADER)
@@ -191,6 +189,10 @@ class Mesh:
         self.__T.translate(x, y, z)
         return self
 
+    def scale(self, x, y, z):
+        self.__T.scale(x, y, z)
+        return self
+
     def rotate_x(self, a):
         self.__T.rotate_x(a)
         return self
@@ -203,5 +205,4 @@ class Mesh:
         self.__T.rotate_z(a)
         return self
 
-    def hide(self):
-        self.__visible = False
+
