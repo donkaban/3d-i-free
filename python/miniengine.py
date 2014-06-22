@@ -1,18 +1,21 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
-from OpenGL.GLU import *
 from OpenGL.arrays import ArrayDatatype as ARR
-import numpy
 import time
+from matrix import mat4
+import numpy
 
 
 class Engine:
     __updateFunction = None
-    __frame = 0
+    __keyboardFunction = None
+    __mouseFunction = None
     __objects = []
     __time = time.time()
+    __delta = 0
+    camera = None
 
-    def __init__(self, w, h):
+    def __init__(self, w, h, fullscreen=False):
         glutInit(sys.argv)
         glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
         glutInitWindowSize(w, h)
@@ -25,15 +28,20 @@ class Engine:
         glutDisplayFunc(self.__draw)
         glutReshapeFunc(self.__resize)
         glutIdleFunc(self.__update)
-        glutKeyboardFunc(self.__esc)
+        glutKeyboardFunc(self.__key)
+        Engine.camera = mat4()
 
-    @staticmethod
-    def __esc(*args):
+
+    def __key(self, *args):
         if args[0] == '\033':
             sys.exit()
+        elif self.__keyboardFunction:
+            self.__keyboardFunction(args[0])
 
-    def __resize(self, w, h):
+    @staticmethod
+    def __resize(w, h):
         print 'resize {0:d}x{1:d}'.format(w, h)
+        Engine.camera.perspective(35, w / h, 0.1, 100)
         glViewport(0, 0, w, h)
 
     def __draw(self):
@@ -44,12 +52,15 @@ class Engine:
 
     def __update(self):
         if self.__updateFunction:
-            self.__updateFunction(self.__frame)
-        self.__frame += 1
+            self.__updateFunction(Engine.get_time() - self.__delta)
+        self.__delta = Engine.get_time()
         glutPostRedisplay()
 
     def set_update(self, hdl):
         self.__updateFunction = hdl
+
+    def set_keyhandler(self, hdl):
+        self.__keyboardFunction = hdl
 
     def add_object(self, obj):
         assert isinstance(obj, Mesh)
@@ -60,8 +71,8 @@ class Engine:
         glutMainLoop()
 
     @staticmethod
-    def getTime():
-        t = time.time() -Engine.__time
+    def get_time():
+        t = time.time() - Engine.__time
         return t
 
 
@@ -69,6 +80,9 @@ class Material:
     __id = None
     __pos = None
     __tex = None
+    __mv = None
+    __pv = None
+
 
     def __init__(self, vertex, fragment):
         vsh = self.__compile(vertex, GL_VERTEX_SHADER)
@@ -96,6 +110,8 @@ class Material:
             raise RuntimeError('shader error : %s' % glGetProgramInfoLog(self.__id))
         self.__pos = glGetAttribLocation(prg, 'pos')
         self.__tex = glGetAttribLocation(prg, 'tex')
+        self.__pv = glGetUniformLocation(prg, 'prjView')
+        self.__mv = glGetUniformLocation(prg, 'modelView')
         return prg
 
     @property
@@ -110,14 +126,24 @@ class Material:
     def tex(self):
         return self.__tex
 
+    @property
+    def mv(self):
+        return self.__mv
+
+    @property
+    def pv(self):
+        return self.__pv
+
 
 class Mesh:
     __verts = None
     __ndx = None
     __material = None
     __id = None
+    __T = None
 
     def __init__(self, v, i):
+        self.__T = mat4()
         self.__verts = numpy.array(v, dtype=numpy.float32)
         self.__ndx = numpy.array(i, dtype=numpy.int16)
         self.__id = glGenBuffers(2)
@@ -144,10 +170,14 @@ class Mesh:
         glUseProgram(self.__material.id)
         glBindBuffer(GL_ARRAY_BUFFER, self.__id[0])
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.__id[1])
+        t = glGetUniformLocation(self.__material.id, 'time')
 
-        t = glGetUniformLocation(self.__material.id,'time')
-        if t != -1 :
-            glUniform1f(t,Engine.getTime())
+        if t != -1:
+            glUniform1f(t, Engine.get_time())
+        if self.__material.mv != -1:
+            glUniformMatrix4fv(self.__material.mv, 1, GL_FALSE, self.__T.ptr)
+        if self.__material.pv != -1:
+            glUniformMatrix4fv(self.__material.pv, 1, GL_FALSE, Engine.camera.ptr)
 
         glVertexAttribPointer(self.__material.pos, 3, GL_FLOAT, GL_FALSE, 20, None)
         glEnableVertexAttribArray(self.__material.pos)
@@ -156,3 +186,22 @@ class Mesh:
         glDrawElements(GL_TRIANGLES, ARR.arrayByteCount(self.__ndx) * 2, GL_UNSIGNED_SHORT, None)
         if glGetError() != GL_NO_ERROR:
             raise RuntimeError('draw error!')
+
+    def translate(self, x, y, z):
+        self.__T.translate(x, y, z)
+        return self
+
+    def rotate_x(self, a):
+        self.__T.rotate_x(a)
+        return self
+
+    def rotate_y(self, a):
+        self.__T.rotate_y(a)
+        return self
+
+    def rotate_z(self, a):
+        self.__T.rotate_z(a)
+        return self
+
+    def hide(self):
+        self.__visible = False

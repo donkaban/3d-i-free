@@ -4,7 +4,7 @@
 
 int main()
 {
-    engine e(640,480);
+    engine e(800,600);
 
     e.setDrawCallback([](float dt)
     {

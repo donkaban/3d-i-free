@@ -5,12 +5,14 @@ def simple() :
         '''
             attribute vec3  pos;
             attribute vec2  tex;
-            uniform float time;
+            uniform mat4 modelView;
+            uniform mat4 prjView;
             varying   vec2  v_tex;
+
             void main()
             {
                 v_tex=tex;
-                gl_Position = vec4(pos * cos(time),1);
+                gl_Position = vec4(pos,1) * modelView * prjView;
             }
         ''',
         '''
@@ -18,7 +20,7 @@ def simple() :
             varying vec2  v_tex;
             void main()
             {
-                gl_FragColor = vec4(v_tex,sin(time*10.0),1);
+                gl_FragColor = vec4(v_tex.x,0,0,1);
             }
         '''
     )
@@ -29,11 +31,14 @@ def zebro() :
         '''
             attribute vec3  pos;
             attribute vec2  tex;
+            uniform mat4 modelView;
+            uniform mat4 prjView;
+
             varying   vec2  v_tex;
             void main()
             {
                 v_tex=tex;
-                gl_Position = vec4(pos,1);
+                gl_Position = vec4(pos,1) * modelView * prjView;
             }
         ''',
         '''
