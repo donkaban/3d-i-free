@@ -41,7 +41,7 @@ class Engine:
     @staticmethod
     def __resize(w, h):
         print 'resize {0:d}x{1:d}'.format(w, h)
-        Engine.camera.perspective(35, w / h, 0.1, 100)
+        Engine.camera.perspective(35, w/h, 0.1, 100)
         glViewport(0, 0, w, h)
 
     def __draw(self):
