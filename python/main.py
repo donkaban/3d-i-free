@@ -4,30 +4,31 @@ import shaders
 
 e = miniengine.Engine(800, 600)
 
-plane = objects.plane(30, 30).set_material(shaders.zebro()).translate(0, 0, -60)
-cube1 = objects.cube(2, 2, 2).set_material(shaders.simple()).translate(-1.5, 0, -10)
-cube2 = objects.cube(2, 2, 2).set_material(shaders.simple()).translate(1.5, 0, -10)
+e.add_object(objects.plane(40, 40).set_material(shaders.cells()).translate(0, 0, -60))
+
+cubes = []
+for x in range (-1,2):
+    for y in range (-1,2):
+        cube = objects.cube(.6, .6, .6).set_material(shaders.water()).translate(x, y, -4)
+        cubes.append(cube)
+        e.add_object(cube)
+
 
 
 def update(dt):
-    cube1.rotate_z(45 * dt).rotate_x(35 * dt)
-    cube2.rotate_z(-45 * dt).rotate_x(-35 * dt)
-    plane.rotate_z(25 * dt)
+    for cube in cubes :
+        cube.rotate_z(45 * dt).rotate_x(45 * dt)
 
 def key(k):
+    pass
     if k=='z' :
-        cube1.set_material(shaders.zebro())
-        cube2.set_material(shaders.zebro())
+        for cube in cubes :
+            cube.set_material(shaders.zebro())
     if k=='s' :
-        cube1.set_material(shaders.simple())
-        cube2.set_material(shaders.simple())
-
-
+        for cube in cubes :
+            cube.set_material(shaders.simple())
 
 e.set_keyhandler(key)
 e.set_update(update)
-e.add_object(plane)
-e.add_object(cube1)
-e.add_object(cube2)
 
 e.loop()
