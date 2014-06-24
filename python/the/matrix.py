@@ -36,4 +36,4 @@ class mat4:
         h = tan(radians(fov) * .5)
         w = h * aspect
         dz = f - n
-        self.__M = matrix([[1./w,0,0,0],[0,1./h,0,0],[0,0,-(f+n)/dz,-2. * f * n / dz],[0,0,-1,0]],dtype = float32)
+        self.__M =  matrix([[1./w,0,0,0],[0,1./h,0,0],[0,0,-(f+n)/dz,-2. * f * n / dz],[0,0,-1,0]],dtype = float32)

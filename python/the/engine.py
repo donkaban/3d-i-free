@@ -1,7 +1,8 @@
+import time
+
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from matrix import mat4
-import time
 
 class Engine:
     __updateFunction = None
@@ -12,7 +13,8 @@ class Engine:
     __delta = 0
     camera = None
 
-    def __init__(self, w, h, fullscreen=False):
+    def __init__(self, w, h):
+        print 'init the {0:d}x{1:d}'.format(w,h)
         glutInit(sys.argv)
         glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
         glutInitWindowSize(w, h)
@@ -27,7 +29,6 @@ class Engine:
         glutIdleFunc(self.__update)
         glutKeyboardFunc(self.__key)
         Engine.camera = mat4()
-
 
     def __key(self, *args):
         if args[0] == '\033':

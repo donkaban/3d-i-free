@@ -1,52 +1,51 @@
 from material import Material
 
 def simple() :
-    return Material(
+    return Material('SIMPLE',
         '''
-            attribute vec3 pos;
-            attribute vec2 tex;
+            attribute vec3 position;
+            attribute vec2 texcoord;
             uniform   mat4 modelView;
             uniform   mat4 prjView;
-            varying   vec3 v_pos;
             varying   vec2 v_tex;
 
             void main()
             {
-                v_tex=tex;
-                v_pos=(pos + 1.)/2.0;
-                gl_Position = vec4(pos,1) * modelView * prjView;
+                v_tex=texcoord;
+                gl_Position = vec4(position,1) * modelView * prjView;
             }
         ''',
         '''
-            uniform float time;
+            uniform sampler2D texture0;
+
             varying vec2  v_tex;
-            varying vec3 v_pos;
 
             void main()
             {
-                gl_FragColor = vec4(v_pos,1);
+                gl_FragColor = texture2D(texture0, v_tex);
             }
         '''
     )
 
 
 def cells() :
-    return Material(
+    return Material('GREEN CELLS',
         '''
-            attribute vec3  pos;
-            attribute vec2  tex;
+            attribute vec3  position;
+            attribute vec2  texcoord;
             uniform mat4 modelView;
             uniform mat4 prjView;
 
             varying   vec2  v_tex;
             void main()
             {
-                v_tex=tex;
-                gl_Position = vec4(pos,1) * modelView * prjView;
+                v_tex=texcoord;
+                gl_Position = vec4(position,1) * modelView * prjView;
             }
         ''',
         '''
             uniform float time;
+
             varying vec2  v_tex;
 
             void main()
@@ -62,21 +61,22 @@ def cells() :
     )
 
 def water() :
-    return Material(
+    return Material('WATER',
         '''
-            attribute vec3  pos;
-            attribute vec2  tex;
+            attribute vec3  position;
+            attribute vec2  texcoord;
             uniform mat4 modelView;
             uniform mat4 prjView;
 
             varying   vec2  v_tex;
             void main()
             {
-                v_tex=tex;
-                gl_Position = vec4(pos,1) * modelView * prjView;
+                v_tex=texcoord;
+                gl_Position = vec4(position,1) * modelView * prjView;
             }
         ''',
         '''
+            uniform sampler2D texture0;
             uniform float time;
             varying vec2  v_tex;
 
@@ -96,7 +96,8 @@ def water() :
 	            }
 	            c /= float(MAX_ITER);
 	            c = 1.5-sqrt(c);
-	            gl_FragColor = vec4(pow(c, 7.0)) + vec4(0.0, 0.15, 0.25, 1.0);
+	            vec4 col = texture2D(texture0, v_tex);
+	            gl_FragColor = col + vec4(pow(c, 7.0)) + vec4(0.0, 0.15, 0.25, 1.0);
 }
         '''
     )
