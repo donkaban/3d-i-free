@@ -14,7 +14,7 @@ class Engine:
     camera = None
 
     def __init__(self, w, h):
-        print 'init the {0:d}x{1:d}'.format(w,h)
+        print 'init miniGL {0:d}x{1:d}'.format(w,h)
         glutInit(sys.argv)
         glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
         glutInitWindowSize(w, h)

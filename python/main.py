@@ -1,4 +1,4 @@
-from the import *
+from miniGL import *
 
 e = Engine(800, 600)
 

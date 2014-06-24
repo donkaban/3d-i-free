@@ -97,7 +97,7 @@ def water() :
 	            c /= float(MAX_ITER);
 	            c = 1.5-sqrt(c);
 	            vec4 col = texture2D(texture0, v_tex);
-	            gl_FragColor = col + vec4(pow(c, 7.0)) + vec4(0.0, 0.15, 0.25, 1.0);
+	            gl_FragColor = col + vec4(pow(c, 7.0)) + vec4(0.0, 0.15, 0.2, 1.0);
 }
         '''
     )
