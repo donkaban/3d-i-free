@@ -1,4 +1,4 @@
-from miniengine import *
+from mesh import Mesh
 
 def plane(width, height):
     w = float(width) / 2.0

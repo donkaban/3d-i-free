@@ -1,8 +1,8 @@
-import miniengine
+import engine
 import objects
 import shaders
 
-e = miniengine.Engine(800, 600)
+e = engine.Engine(800, 600)
 
 e.add_object(objects.plane(40, 40).set_material(shaders.cells()).translate(0, 0, -60))
 

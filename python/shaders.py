@@ -1,4 +1,4 @@
-from miniengine import *
+from material import Material
 
 def simple() :
     return Material(
