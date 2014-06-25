@@ -1,20 +1,21 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 
+
 class Material:
     __id = None
     __attributes = {}
 
-    def __init__(self, name, vertex, fragment):
+    def __init__(self, tag, vertex, fragment):
         vsh = self.__compile(vertex, GL_VERTEX_SHADER)
         fsh = self.__compile(fragment, GL_FRAGMENT_SHADER)
-        self.__id= self.__link(vsh, fsh)
+        self.__id = self.__link(vsh, fsh)
         self.__add_attribute('position')
         self.__add_attribute('texcoord')
-        print 'create material {0:s}'.format(name)
+        print 'create material {0:s}'.format(tag)
 
-    def __add_attribute(self, name):
-        self.__attributes[name] = glGetAttribLocation(self.__id, name)
+    def __add_attribute(self, tag):
+        self.__attributes[tag] = glGetAttribLocation(self.__id, tag)
 
     @staticmethod
     def __compile(source, shader_type):
@@ -38,35 +39,32 @@ class Material:
         return prg
 
     def set_attributes(self):
-        p = self.__attributes['position']
-        t = self.__attributes['texcoord']
-        if (p != -1):
-            glVertexAttribPointer(p, 3, GL_FLOAT, GL_FALSE, 20, None)
-            glEnableVertexAttribArray(p)
-        if (t != -1):
-            glVertexAttribPointer(t, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
-            glEnableVertexAttribArray(t)
+        pos_id = self.__attributes['position']
+        tex_id = self.__attributes['texcoord']
+        if pos_id != -1:
+            glVertexAttribPointer(pos_id, 3, GL_FLOAT, GL_FALSE, 20, None)
+            glEnableVertexAttribArray(pos_id)
+        if tex_id != -1:
+            glVertexAttribPointer(tex_id, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
+            glEnableVertexAttribArray(tex_id)
 
     def set_uniform_matrix(self, k, value):
-       id = glGetUniformLocation(self.__id,k)
-       if id != -1:
+        id = glGetUniformLocation(self.__id, k)
+        if id != -1:
             glUniformMatrix4fv(id, 1, GL_FALSE, value)
 
     def set_uniform_float(self, k, value):
-       id = glGetUniformLocation(self.__id,k)
-       if id != -1:
-            glUniform1f(id, value)
+        uid = glGetUniformLocation(self.__id, k)
+        if uid != -1:
+            glUniform1f(uid, value)
 
-    def set_texture(self,k,texture):
-        id = glGetUniformLocation(self.__id,k)
-        if id != -1:
+    def set_texture(self, k, texture):
+        uid = glGetUniformLocation(self.__id, k)
+        if uid != -1:
             glActiveTexture(GL_TEXTURE0)
             glBindTexture(GL_TEXTURE_2D, texture.id)
-            glUniform1i(id,0)
-
+            glUniform1i(uid, 0)
 
     @property
     def id(self):
         return self.__id
-
-

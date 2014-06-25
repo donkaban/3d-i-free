@@ -2,7 +2,9 @@ import time
 
 from OpenGL.GL import *
 from OpenGL.GLUT import *
+
 from matrix import mat4
+
 
 class Engine:
     __updateFunction = None
@@ -14,7 +16,7 @@ class Engine:
     camera = None
 
     def __init__(self, w, h):
-        print 'init miniGL {0:d}x{1:d}'.format(w,h)
+        print 'init miniGL {0:d}x{1:d}'.format(w, h)
         glutInit(sys.argv)
         glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
         glutInitWindowSize(w, h)
@@ -39,7 +41,7 @@ class Engine:
     @staticmethod
     def __resize(w, h):
         print 'resize {0:d}x{1:d}'.format(w, h)
-        Engine.camera.perspective(35, w/h, 0.1, 100)
+        Engine.camera.perspective(35, w / h, 0.1, 100)
         glViewport(0, 0, w, h)
 
     def __draw(self):

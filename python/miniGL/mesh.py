@@ -3,10 +3,11 @@ from OpenGL.GLUT import *
 from OpenGL.arrays import ArrayDatatype as ARR
 import numpy
 
-from material import  Material
+from material import Material
 from texture import Texture
 from engine import Engine
 from matrix import mat4
+
 
 class Mesh:
     __id = None
@@ -39,23 +40,23 @@ class Mesh:
         self.__material = mat
         return self
 
-    def set_texture(self,texture):
+    def set_texture(self, texture):
         assert isinstance(texture, Texture)
         self.__texture = texture
         return self
 
     def draw(self):
-        if not self.__material :
+        if not self.__material:
             return
         glUseProgram(self.__material.id)
         glBindBuffer(GL_ARRAY_BUFFER, self.__id[0])
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.__id[1])
         self.__material.set_attributes()
-        self.__material.set_uniform_float('time',Engine.get_time())
-        self.__material.set_uniform_matrix('modelView',self.__T.ptr)
-        self.__material.set_uniform_matrix('prjView',Engine.camera.ptr)
+        self.__material.set_uniform_float('time', Engine.get_time())
+        self.__material.set_uniform_matrix('modelView', self.__T.ptr)
+        self.__material.set_uniform_matrix('prjView', Engine.camera.ptr)
         if self.__texture:
-            self.__material.set_texture('texture0',self.__texture)
+            self.__material.set_texture('texture0', self.__texture)
 
         glDrawElements(GL_TRIANGLES, ARR.arrayByteCount(self.__ndx) * 2, GL_UNSIGNED_SHORT, None)
 
