@@ -1,10 +1,7 @@
 import time
-
 from OpenGL.GL import *
 from OpenGL.GLUT import *
-
 from matrix import mat4
-
 
 class Engine:
     __updateFunction = None
@@ -73,4 +70,3 @@ class Engine:
     def get_time():
         t = time.time() - Engine.__time
         return t
-

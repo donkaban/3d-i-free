@@ -8,36 +8,31 @@ from texture import Texture
 from engine import Engine
 from matrix import mat4
 
-
 class Mesh:
-    __id = None
-    __verts = None
-    __ndx = None
-    __T = None
-    __material = None
-    __texture = None
+    __v_hdl = None       # vertex buffer handler
+    __i_hdl = None       # index buffer handlwr
+    __i_size = None      # index buffer size
+    __T = None           # object transform matrix
+    __material = None    # object naterial
+    __texture = None     # object texture
 
     def __init__(self, v, i):
         self.__T = mat4()
-        self.__verts = numpy.array(v, dtype=numpy.float32)
-        self.__ndx = numpy.array(i, dtype=numpy.int16)
-        self.__id = glGenBuffers(2)
-        glBindBuffer(GL_ARRAY_BUFFER, self.__id[0])
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.__id[1])
-        glBufferData(GL_ARRAY_BUFFER,
-                     ARR.arrayByteCount(self.__verts),
-                     ARR.voidDataPointer(self.__verts),
-                     GL_STATIC_DRAW)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                     ARR.arrayByteCount(self.__ndx),
-                     ARR.voidDataPointer(self.__ndx),
-                     GL_STATIC_DRAW)
+        v_buff = numpy.array(v, dtype=numpy.float32)
+        i_buff = numpy.array(i, dtype=numpy.int16)
+        self.__v_hdl = glGenBuffers(1)
+        self.__i_hdl = glGenBuffers(1)
+        self.__i_size = ARR.arrayByteCount(i_buff) * 2
+
+        glBindBuffer(GL_ARRAY_BUFFER, self.__v_hdl)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.__i_hdl)
+        glBufferData(GL_ARRAY_BUFFER, ARR.arrayByteCount(v_buff), ARR.voidDataPointer(v_buff),GL_STATIC_DRAW)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, ARR.arrayByteCount(i_buff),ARR.voidDataPointer(i_buff),GL_STATIC_DRAW)
         if glGetError() != GL_NO_ERROR:
-            raise RuntimeError('mesh vbo error!')
+            raise RuntimeError('mesh create error!')
 
     def set_material(self, mat):
-        assert isinstance(mat, Material)
-        self.__material = mat
+        self.__material = Material(mat[0], mat[1], mat[2])
         return self
 
     def set_texture(self, texture):
@@ -49,16 +44,15 @@ class Mesh:
         if not self.__material:
             return
         glUseProgram(self.__material.id)
-        glBindBuffer(GL_ARRAY_BUFFER, self.__id[0])
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.__id[1])
+        glBindBuffer(GL_ARRAY_BUFFER, self.__v_hdl)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.__i_hdl)
         self.__material.set_attributes()
         self.__material.set_uniform_float('time', Engine.get_time())
         self.__material.set_uniform_matrix('modelView', self.__T.ptr)
         self.__material.set_uniform_matrix('prjView', Engine.camera.ptr)
         if self.__texture:
             self.__material.set_texture('texture0', self.__texture)
-
-        glDrawElements(GL_TRIANGLES, ARR.arrayByteCount(self.__ndx) * 2, GL_UNSIGNED_SHORT, None)
+        glDrawElements(GL_TRIANGLES, self.__i_size , GL_UNSIGNED_SHORT, None)
 
     def translate(self, x, y, z):
         self.__T.translate(x, y, z)

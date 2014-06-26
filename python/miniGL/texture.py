@@ -4,8 +4,8 @@ from PIL import Image
 class Texture():
     __id = None
 
-    def __init__(self, fileName):
-        image = Image.open(fileName)
+    def __init__(self, filename):
+        image = Image.open(filename)
         w = image.size[0]
         h = image.size[1]
         image = image.tostring("raw", "RGBX", 0, -1)
@@ -15,7 +15,7 @@ class Texture():
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        print 'create texture {0:s}; w: {1:d} h:{2:d}'.format(fileName, w, h)
+        print 'create texture {0:s}; w: {1:d} h:{2:d}'.format(filename, w, h)
 
     @property
     def id(self):
