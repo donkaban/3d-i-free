@@ -1,18 +1,23 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 
-
 class Material:
     __id = None
     __attributes = {}
+    __cache = {}
 
     def __init__(self, tag, vertex, fragment):
-        vsh = self.__compile(vertex, GL_VERTEX_SHADER)
-        fsh = self.__compile(fragment, GL_FRAGMENT_SHADER)
-        self.__id = self.__link(vsh, fsh)
-        self.__add_attribute('position')
-        self.__add_attribute('texcoord')
-        print 'create material {0:s}'.format(tag)
+        if tag in Material.__cache:
+            print 'load material {0:s}'.format(tag)
+            self.__id = Material.__cache[tag]
+        else:
+            vsh = self.__compile(vertex, GL_VERTEX_SHADER)
+            fsh = self.__compile(fragment, GL_FRAGMENT_SHADER)
+            self.__id = self.__link(vsh, fsh)
+            self.__add_attribute('position')
+            self.__add_attribute('texcoord')
+            Material.__cache[tag] = self.__id
+            print 'create material {0:s}'.format(tag)
 
     def __add_attribute(self, tag):
         self.__attributes[tag] = glGetAttribLocation(self.__id, tag)
@@ -49,9 +54,19 @@ class Material:
             glEnableVertexAttribArray(tex_id)
 
     def set_uniform_matrix(self, k, value):
-        id = glGetUniformLocation(self.__id, k)
-        if id != -1:
-            glUniformMatrix4fv(id, 1, GL_FALSE, value)
+        uid = glGetUniformLocation(self.__id, k)
+        if uid != -1:
+            glUniformMatrix4fv(uid, 1, GL_FALSE, value)
+
+    def set_uniform_vec4(self, k, x, y, z, w):
+        uid = glGetUniformLocation(self.__id, k)
+        if uid != -1:
+            glUniform4f(uid, x, y, z, w)
+
+    def set_uniform_vec3(self, k, x,y,z):
+        uid = glGetUniformLocation(self.__id, k)
+        if uid != -1:
+            glUniform3f(uid, x, y, z)
 
     def set_uniform_float(self, k, value):
         uid = glGetUniformLocation(self.__id, k)
