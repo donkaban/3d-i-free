@@ -14,12 +14,17 @@ simple = ['SIMPLE',
     ''',
     '''
     uniform sampler2D texture0;
+    uniform sampler2D texture1;
 
     varying vec2  v_tex;
 
     void main()
     {
-      gl_FragColor = texture2D(texture0, v_tex);
+        vec4 col1 = texture2D(texture0, v_tex);
+        vec4 col2 = texture2D(texture1, v_tex);
+        col2.a = .4;
+        gl_FragColor = col1 * col2;
+
     }
     ''']
 

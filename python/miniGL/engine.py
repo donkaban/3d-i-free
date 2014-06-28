@@ -23,6 +23,8 @@ class Engine:
         glClearDepth(1.0)
         glDepthFunc(GL_LEQUAL)
         glEnable(GL_DEPTH_TEST)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glutDisplayFunc(self.__draw)
         glutReshapeFunc(self.__resize)
         glutIdleFunc(self.__update)

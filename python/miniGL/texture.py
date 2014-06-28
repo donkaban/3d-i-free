@@ -1,6 +1,5 @@
 from OpenGL.GL import *
 from PIL import Image
-
 class Texture():
     __id = None
 
