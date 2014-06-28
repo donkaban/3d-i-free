@@ -1,9 +1,7 @@
 from OpenGL.GL import *
 from OpenGL.arrays import ArrayDatatype as adt
 import numpy
-
 from material import Material
-from texture import Texture
 from engine import Engine
 from matrix import mat4
 
@@ -12,7 +10,7 @@ class Mesh:
     __i_hdl = None       # index buffer handlwr
     __i_size = None      # index buffer size
     __T = None           # object transform matrix
-    __material = None    # object naterial
+    __material = None    # object material
     __texture = []       # object textures
 
     def __init__(self, v, i):
@@ -25,13 +23,14 @@ class Mesh:
 
         glBindBuffer(GL_ARRAY_BUFFER, self.__v_hdl)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.__i_hdl)
-        glBufferData(GL_ARRAY_BUFFER, adt.arrayByteCount(v_buff), adt.voidDataPointer(v_buff),GL_STATIC_DRAW)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, adt.arrayByteCount(i_buff),adt.voidDataPointer(i_buff),GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, adt.arrayByteCount(v_buff), adt.voidDataPointer(v_buff), GL_STATIC_DRAW)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, adt.arrayByteCount(i_buff), adt.voidDataPointer(i_buff), GL_STATIC_DRAW)
         if glGetError() != GL_NO_ERROR:
             raise RuntimeError('mesh create error!')
 
     def set_material(self, mat):
-        self.__material = Material(mat[0], mat[1], mat[2])
+        assert isinstance(mat, Material)
+        self.__material = mat
         return self
 
     def set_texture(self, textures):

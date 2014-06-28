@@ -7,11 +7,14 @@ class Material:
 
     def __init__(self, tag, vertex, fragment):
         if tag in Material.__cache:
-            print 'load material {0:s}'.format(tag)
+            print 'load material {0:s} from cache'.format(tag)
             self.__id = Material.__cache[tag]
         else:
-            vsh = self.__compile(vertex, GL_VERTEX_SHADER)
-            fsh = self.__compile(fragment, GL_FRAGMENT_SHADER)
+            v_str = open(vertex).read()
+            f_str = open(fragment).read()
+            print(v_str)
+            vsh = self.__compile(v_str, GL_VERTEX_SHADER)
+            fsh = self.__compile(f_str, GL_FRAGMENT_SHADER)
             self.__id = self.__link(vsh, fsh)
             Material.__cache[tag] = self.__id
             print 'create material {0:s}'.format(tag)
@@ -49,7 +52,7 @@ class Material:
             glEnableVertexAttribArray(tex_id)
         if nor_id != -1:
             glVertexAttribPointer(nor_id, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(20))
-            glEnableVertexAttribArray(tex_id)
+            glEnableVertexAttribArray(nor_id)
 
     def set_uniform_matrix(self, k, value):
         uid = glGetUniformLocation(self.__id, k)
