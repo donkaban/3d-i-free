@@ -8,8 +8,9 @@ c++ dependences (linux):
 ----------------------------
 * libGL
 * libX11
-* scons (for building)* 
+* scons (for building)
 
 c++ dependences (macos): 
 ----------------------------
+* scons (for building) 
 * http://xquartz.macosforge.org/landing/
