@@ -12,7 +12,6 @@ class Material:
         else:
             v_str = open(vertex).read()
             f_str = open(fragment).read()
-            print(v_str)
             vsh = self.__compile(v_str, GL_VERTEX_SHADER)
             fsh = self.__compile(f_str, GL_FRAGMENT_SHADER)
             self.__id = self.__link(vsh, fsh)
