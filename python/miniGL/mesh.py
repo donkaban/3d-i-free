@@ -27,6 +27,7 @@ class Mesh:
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, adt.arrayByteCount(i_buff), adt.voidDataPointer(i_buff), GL_STATIC_DRAW)
         if glGetError() != GL_NO_ERROR:
             raise RuntimeError('mesh create error!')
+        Engine.get().add_object(Engine.get(), self)
 
     def set_material(self, mat):
         assert isinstance(mat, Material)

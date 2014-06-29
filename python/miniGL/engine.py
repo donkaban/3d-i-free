@@ -4,9 +4,11 @@ from OpenGL.GLUT import *
 from matrix import mat4
 
 class Engine:
+    __instance = None
     __updateFunction = None
     __keyboardFunction = None
-    __mouseFunction = None
+    __mousePressFunction = None
+    __mouseMoveFunction = None
     __objects = []
     __time = time.time()
     __delta = 0
@@ -30,6 +32,7 @@ class Engine:
         glutIdleFunc(self.__update)
         glutKeyboardFunc(self.__key)
         Engine.camera = mat4()
+        Engine.__instance = self
 
     def __key(self, *args):
         if args[0] == '\033':
@@ -40,7 +43,7 @@ class Engine:
     @staticmethod
     def __resize(w, h):
         print 'resize {0:d}x{1:d}'.format(w, h)
-        Engine.camera.perspective(35, w / h, 0.1, 100)
+        Engine.camera.perspective(35, float(w) / h, 0.1, 100)
         glViewport(0, 0, w, h)
 
     def __draw(self):
@@ -57,12 +60,20 @@ class Engine:
 
     def set_update(self, hdl):
         self.__updateFunction = hdl
+        return self
 
     def set_keyhandler(self, hdl):
         self.__keyboardFunction = hdl
+        return self
 
+    def set_mouse_handlers(self, mpress, mmove):
+        self.__mousePressFunction = mpress
+        self.__mouseMoveFunction = mmove
+
+    @staticmethod
     def add_object(self, obj):
         self.__objects.append(obj)
+        return self
 
     @staticmethod
     def loop():
@@ -72,3 +83,7 @@ class Engine:
     def get_time():
         t = time.time() - Engine.__time
         return t
+
+    @staticmethod
+    def get():
+        return Engine.__instance
