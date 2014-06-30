@@ -10,6 +10,7 @@ class Mesh:
     __i_hdl = None       # index buffer handlwr
     __i_size = None      # index buffer size
     __T = None           # object transform matrix
+    __I = None           # inverse transpose normal matrix
     __material = None    # object material
     __texture = []       # object textures
 
@@ -56,6 +57,7 @@ class Mesh:
 
     def translate(self, x, y, z):
         self.__T.translate(x, y, z)
+
         return self
 
     def scale(self, x, y, z):

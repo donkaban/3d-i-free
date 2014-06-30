@@ -10,11 +10,16 @@ varying vec3 v_norm;
 varying vec3 v_light;
 varying vec3 v_eye; 
 
-const vec3 light_position = vec3(0,10,0);
+const vec3 light_position = vec3(-20,0,0);
 const vec3 eye_position   = vec3(0,0,0);
 
 void main()
 {
+//    mat3 normalMatrix;
+//    normalMatrix[0] = normalize (modelView[0].xyz);
+//    normalMatrix[1] = normalize (modelView[1].xyz);
+//    normalMatrix[2] = normalize (modelView[2].xyz);
+//
 	vec4 p4 = vec4(position,1);
 	vec4 n4 = vec4(normal,0);
 
