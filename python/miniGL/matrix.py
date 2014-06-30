@@ -1,5 +1,5 @@
 import ctypes
-from numpy import identity, float32, matrix
+from numpy import identity, float32, matrix,linalg
 from math import sin, cos, tan, radians
 
 class mat4:
@@ -8,9 +8,17 @@ class mat4:
     def __init__(self):
         self.__M = identity(4, dtype=float32)
 
+    def copy(self, M):
+        self.__M = M
+        return self
+
     @property
     def ptr(self):
         return self.__M.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
+
+    @property
+    def raw(self):
+        return self.__M
 
     def translate(self, x, y, z):
         self.__M = self.__M * matrix([[1, 0, 0, x], [0, 1, 0, y], [0, 0, 1, z], [0, 0, 0, 1]], dtype=float32)
@@ -40,3 +48,11 @@ class mat4:
         self.__M = matrix(
             [[1. / w, 0, 0, 0], [0, 1. / h, 0, 0], [0, 0, -(f + n) / dz, -2. * f * n / dz], [0, 0, -1, 0]],
             dtype=float32)
+
+    def transpose(self):
+        t = mat4().copy(self.__M)
+        t.raw.transpose()
+        return t
+
+    def inverse(self):
+        return mat4().copy(linalg.inv(self.__M))

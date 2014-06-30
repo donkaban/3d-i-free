@@ -48,6 +48,7 @@ class Mesh:
         self.__material.set_uniform_float('time', Engine.get_time())
         self.__material.set_uniform_matrix('modelView', self.__T.ptr)
         self.__material.set_uniform_matrix('prjView', Engine.camera.ptr)
+
         for tex in self.__texture:
             ndx = self.__texture.index(tex)
             self.__material.set_texture(ndx, tex)
