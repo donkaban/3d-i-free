@@ -15,19 +15,14 @@ const vec3 eye_position   = vec3(0,0,0);
 
 void main()
 {
-//    mat3 normalMatrix;
-//    normalMatrix[0] = normalize (modelView[0].xyz);
-//    normalMatrix[1] = normalize (modelView[1].xyz);
-//    normalMatrix[2] = normalize (modelView[2].xyz);
-//
-	vec4 p4 = vec4(position,1);
-	vec4 n4 = vec4(normal,0);
+    mat3 normalMatrix = mat3(modelView[0].xyz,modelView[1].xyz,modelView[2].xyz);
 
+	vec4 p4 = vec4(position,1);
 	vec3 view_pos   = vec3(p4 * modelView);
     
     v_light  = normalize(light_position - view_pos);
     v_eye    = normalize(eye_position   - view_pos);
-    v_norm   = vec3(n4 * modelView);
+    v_norm   = normal * normalMatrix;
 	v_tex    = texcoord;
 	
 	gl_Position = p4 * modelView * prjView;

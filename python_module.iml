@@ -4,7 +4,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/data" />
     <content url="file://$MODULE_DIR$/python" />
-    <orderEntry type="jdk" jdkName="Python 2.7.7 (/usr/local/Cellar/python/2.7.7_2/Frameworks/Python.framework/Versions/2.7/bin/python2.7)" jdkType="Python SDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
