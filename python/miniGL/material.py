@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 
+
 class Material:
     __id = None
     __cache = {}
