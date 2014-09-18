@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from miniGL import *
 
 e = Engine(800, 600)
