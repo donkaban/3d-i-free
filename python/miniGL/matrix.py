@@ -1,6 +1,7 @@
 import ctypes
-from numpy import identity, float32, matrix,linalg
+from numpy import identity, float32, matrix, linalg
 from math import sin, cos, tan, radians
+
 
 class mat4:
     __M = None
