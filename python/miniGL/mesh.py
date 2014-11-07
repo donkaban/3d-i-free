@@ -5,14 +5,15 @@ from material import Material
 from engine import Engine
 from matrix import mat4
 
+
 class Mesh:
-    __v_hdl = None       # vertex buffer handler
-    __i_hdl = None       # index buffer handlwr
-    __i_size = None      # index buffer size
-    __T = None           # object transform matrix
-    __I = None           # inverse transpose normal matrix
-    __material = None    # object material
-    __texture = []       # object textures
+    __v_hdl = None  # vertex buffer handler
+    __i_hdl = None  # index buffer handlwr
+    __i_size = None  # index buffer size
+    __T = None  # object transform matrix
+    __I = None  # inverse transpose normal matrix
+    __material = None  # object material
+    __texture = []  # object textures
 
     def __init__(self, v, i):
         self.__T = mat4()
@@ -53,7 +54,7 @@ class Mesh:
         for tex in self.__texture:
             ndx = self.__texture.index(tex)
             self.__material.set_texture(ndx, tex)
-        glDrawElements(GL_TRIANGLES, self.__i_size , GL_UNSIGNED_SHORT, None)
+        glDrawElements(GL_TRIANGLES, self.__i_size, GL_UNSIGNED_SHORT, None)
 
     def translate(self, x, y, z):
         self.__T.translate(x, y, z)
